@@ -1,4 +1,4 @@
-# studia
+# Studies
 
 Everything I do at university (brief summaries)
 
