@@ -149,7 +149,7 @@ class Or(Formula):
 
 
 if __name__ == "__main__":
-    import unittest
+    import unittest  # testy
 
     class Tests(unittest.TestCase):
         def test_constant(self):
