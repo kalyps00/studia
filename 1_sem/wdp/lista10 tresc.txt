@@ -1,0 +1,104 @@
+Zadanie zaproponowała Agnieszka Tatarczuk.
+
+To jest zadanie o listach jednokierunkowych, które były już na WDI i nie należy się ich bardzo obawiać. Dla przypomnienia – będzie należało zadeklarować typ dla elementu listy jakoś tak:
+
+struct elemListy {
+    // tu wpisz "właściwą" zawartość elementu, być może więcej niż jedno pole
+    struct elemListy * next;
+};
+
+a dla zwięzłości może przydać się taki alias: typedef struct elemListy * lista;. W razie wątpliwości zadawaj pytania prowadzącym (także np. w ramach konsultacji).
+
+Przechowywane na liście informacje są dość podobne do tego, co było w zadaniach "zwykłych" tydzień temu, więc pewne elementy koncepcji rozwiązania pewnie powtórzą się tutaj.
+
+Uwaga: pod pytaniem są dwa przyciski ("Precheck", czyli "Sprawdź wstępnie" oraz "Check", czyli "Sprawdź"). Pierwszy z nich uruchamia program na przykładowych zestawach danych podanych w treści zadania i pozwala potwierdzić, czy zgłoszony program np. wypisuje wartości w poprawny sposób. Te uruchomienia oczywiście nie są punktowane; aby dostać punkty za zadanie, trzeba użyć drugiego przycisku.
+
+
+Mamy otwarty i pełny klub oraz kolejkę przed klubem. Jeśli w klubie jest jeszcze miejsce, kolejne pełnoletnie osoby z kolejki są wpuszczane. Jeśli ktoś nie jest pełnoletni i byłaby jego kolej na wejście do klubu, opuszcza kolejkę. W czasie (na wejściu) następują kolejne zdarzenia:
+
++ <imię> <wiek> - do kolejki przychodzi osoba o imieniu <imię> i wieku <wiek>,
+- <imię> - osoba o imieniu <imię> opuszcza kolejkę,
+O X - X osób opuszcza klub,
+F <imię> <wiek> <imię_kolegi> - do kolejki przychodzi osoba o imieniu <imię> i wieku <wiek>, która koleguje się z <imię_kolegi>, więc osoba o imieniu <imię_kolegi> wpuści ją przed siebie (załóż, że kolega zawsze jest w kolejce),
+Z - klub się zamyka.
+Każda osoba ma unikatowe imię składające się z dużych i małych liter oraz cyfr. Długość imienia nie przekracza 1000 znaków. Wiek osób jest liczbą nie większą od 40.
+
+Możesz założyć, że na wejściu pojawi się nie więcej niż 10100 linii.
+
+Wszystkie znaki na wejściu są z ASCII.
+
+Zadanie: Wypisz imiona w kolejności w jakiej zostały wpuszczone do klubu
+
+Wejście
+Wejście składa się z linii postaci opisanej wyżej. Ostatnia linia wejścia zawiera pojedynczą literę Z.
+
+Wyjście
+Wyjście powinno składać się z tylu linii, ile osób wpuszczono do klubu przed zamknięciem. Każda linia wyjścia zawiera imię osoby.
+
+Uwaga: To zadanie ma limit pamięci 5 MB.
+Przykłady:
+A
+Wejście
+
++ Adam 20
++ Ola 23
++ Max 19
+F Ala 24 Ola
++ Kamil 17
++ Iga 20
+O 3
+- Max
+F Piotr 18 Kamil
+O 2
++ Igor 30
+Z
+
+Wyjście:
+
+Adam
+Ala
+Ola
+Piotr
+Iga
+
+Wyjaśnienie:
+Na początku w kolejce są Adam, Ola i Max. Potem za Adamem pojawia się Ala, a na końcu kolejki Kamil i Iga. Adam, Ala i Ola wchodzą do klubu, Max opuszcza kolejkę, a przed Kamilem pojawia się Piotr. Piotr i Iga wchodzą do klubu (Kamil ma urodziny jutro i stoi w kolejce bez szans na wejście. Gdy jest pierwszy, opuszcza kolejkę). Do kolejki dołącza Igor, ale klub się zamyka.
+
+B
+Wejście:
+
++ A 19
++ B 17
+F c 20 B
+- B
+O 1
+Z
+
+Wyjście:
+
+A
+
+C
+Wejście:
+
+Z
+
+Wyjście:
+
+
+
+D
+Wejście:
+
+O 3
++ Adam 20
++ Bob 17
++ Cara 19
+Z
+
+Wyjście:
+
+Adam
+Cara
+
+
