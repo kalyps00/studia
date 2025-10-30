@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- !!! -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- !!! -->
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .box3 {
+        background-color: aqua;
+        grid-area: one;
+      }
+
+      .box4 {
+        background-color: darkslategray;
+        grid-area: two;
+      }
+
+      .box5 {
+        background-color: violet;
+        grid-area: three;
+      }
+
+      .box6 {
+        background-color: brown;
+        grid-area: four;
+      }
+
+      .box7 {
+        background-color: chartreuse;
+        grid-area: five;
+      }
+
+      .box8 {
+        background-color: chocolate;
+        grid-area: six;
+      }
+
+      .container2 {
+        display: grid;
+        grid-template-areas:
+          "one one two"
+          "three four two"
+          "five five six";
+      }
+
+      @media (min-width: 321px) and (max-width: 768px) {
+        .container2 {
+          grid-template-areas:
+            "one one"
+            "two three"
+            "two four"
+            "two six"
+            "five five";
+        }
+      }
+
+      @media (max-width: 320px) {
+        .container2 {
+          grid-template-areas:
+            "one"
+            "two"
+            "three"
+            "four"
+            "five"
+            "six";
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container2">
+      <div class="box box3">One</div>
+      <div class="box box4">Two</div>
+      <div class="box box5">Three</div>
+      <div class="box box6">Four</div>
+      <div class="box box7">Five</div>
+      <div class="box box8">Six</div>
+    </div>
+  </body>
+</html>

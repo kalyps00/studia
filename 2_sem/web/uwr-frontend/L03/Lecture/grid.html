@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+      }
+
+      .container > div {
+        height: 100px;
+        background-color: lightcoral;
+      }
+
+      .container > .box1 {
+        background-color: aqua;
+        grid-column-start: 3;
+        grid-row-start: 1;
+        z-index: 2;
+      }
+      .container > .box2 {
+        background-color: brown;
+        grid-column-start: 3;
+        grid-row-start: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="box1">Lorem, ipsum dolor.</div>
+      <div class="box2">Perferendis, neque inventore!</div>
+      <div>Voluptate, modi minus.</div>
+      <div>Dolore, suscipit repellat?</div>
+    </div>
+  </body>
+</html>

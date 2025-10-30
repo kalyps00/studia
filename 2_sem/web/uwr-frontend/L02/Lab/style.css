@@ -1,0 +1,67 @@
+body {
+  background-color: lightblue;
+  color: darkblue;
+  font-family: "Caveat", cursive;
+  font-size: 1rem !important;
+}
+h1 {
+  font-weight: 800 !important;
+  text-align: center;
+}
+p {
+  margin: 0.5rem 1rem !important;
+}
+.box:nth-child(1) {
+  background-color: lightgreen;
+  border-radius: 50%;
+}
+.box:nth-child(2) {
+  background-color: lightslategray;
+  border: 10px solid black;
+  box-sizing: border-box;
+}
+.box:nth-child(3) {
+  border-top: 50px solid white;
+  box-sizing: border-box;
+}
+.box:nth-child(1):hover {
+  background-color: lightpink;
+}
+.box:nth-child(2):hover {
+  background-color: black;
+  border-color: lightslategrey;
+}
+.box:nth-child(3):hover {
+  border-top: 0px;
+  border-bottom: 50px solid white;
+}
+#challenge3 a {
+  text-decoration: underline;
+}
+#challenge3 a:link {
+  color: darkblue;
+  text-decoration: underline;
+}
+#challenge3 a:visited {
+  color: lightslategray;
+}
+#challenge3 a:hover {
+  color: red;
+  font-weight: bold;
+}
+#challenge3 li {
+  list-style: "🍔";
+}
+#challenge4 p:empty,
+#challenge4 input:disabled,
+#challenge4 a[href*="recipe"] {
+  display: none !important;
+}
+#challenge5 img {
+  width: 70%;
+  min-width: 100px;
+  max-width: 500px;
+}
+#challenge5 figcaption {
+  font-size: 0.7rem;
+}

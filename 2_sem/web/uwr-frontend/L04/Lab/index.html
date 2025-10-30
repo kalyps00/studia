@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="card">
+      <h1 class="card__header">Contact Form</h1>
+      <form class="card__content">
+        <div class="input__box">
+          <label>
+            Name*:
+            <input
+              class="form__input"
+              type="text"
+              name="first_name"
+              autocomplete="first_name"
+              required
+            />
+          </label>
+        </div>
+        <div class="input__box">
+          <label>
+            Last Name:
+            <input
+              class="form__input"
+              type="text"
+              name="last_name"
+              autocomplete="family-name"
+            />
+          </label>
+        </div>
+        <div class="input__box input__box--fullsize">
+          <label>
+            Email: *
+            <input
+              class="form__input"
+              type="email"
+              name="email"
+              autocomplete="email"
+              required
+            />
+          </label>
+        </div>
+
+        <div class="input__box input__box--fullsize">
+          <label>
+            Phone
+            <input
+              class="form__input"
+              type="tel"
+              name="phone"
+              autocomplete="tel"
+              maxlength="9"
+              pattern="^[0-9]{9}$"
+            />
+          </label>
+        </div>
+        <div class="input__box">
+          <label class="input__label--centered">
+            <input class="checkbox" type="checkbox" name="newsletter" checked />
+            Subscribe to the newsletter
+          </label>
+        </div>
+        <div class="input__box input__box--fullsize">
+          <label>
+            Reason for Contact:*
+            <select class="form__input" name="reason" required>
+              <option value="">-- Select --</option>
+              <option value="support">Technical Support</option>
+              <option value="feedback">Feedback</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+        </div>
+        <div class="input__box input__box--fullsize">
+          <label>
+            Message:*
+            <textarea
+              class="form__input"
+              name="message"
+              autocomplete="off"
+              required
+              rows="5"
+            ></textarea>
+          </label>
+        </div>
+        <div class="input__box">
+          <button class="submit__button" type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

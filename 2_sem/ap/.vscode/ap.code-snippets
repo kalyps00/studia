@@ -1,0 +1,22 @@
+{
+  "ap": {
+    "prefix": "ap",
+    "body": [
+      "#include <bits/stdc++.h>",
+      "using namespace std;",
+      "typedef long long ll;",
+      "typedef long double ld;",
+      "#define MOD 694202137",
+      "int main() {",
+      "    cin.tie(0);",
+      "    cout.tie(0);",
+      "    ios_base::sync_with_stdio(0);",
+      "    int n;",
+      "    cin >> n;",
+      "    $0",
+
+      "}"
+    ],
+    "description": "Snippet C++ 'Algorytmika Praktyczna'"
+  }
+}

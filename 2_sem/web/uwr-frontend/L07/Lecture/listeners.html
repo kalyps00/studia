@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Przykłady Manipulacji DOM</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .highlight {
+        background-color: yellow;
+      }
+      .hidden {
+        display: none;
+      }
+      .styled-element {
+        color: blue;
+        font-weight: bold;
+      }
+    </style>
+    <script src="listeners.js" defer></script>
+  </head>
+  <body>
+    <h1>Przykłady Manipulacji DOM</h1>
+
+    <div id="container">
+      <p class="description">Pierwszy akapit z klasą description.</p>
+      <p id="second-paragraph">
+        Drugi akapit z identyfikatorem second-paragraph.
+      </p>
+      <p class="description">Trzeci akapit z klasą description.</p>
+      <div id="inner-container">
+        <p>Wewnątrz kontenera wewnętrznego.</p>
+      </div>
+    </div>
+    <button onclick="console.log('hello')">Alert</button>
+    <button id="highlight-button">Highlight</button>
+
+    <form id="form">
+      <label for="name">Imię:</label>
+      <input type="text" id="name" name="name" required />
+      <button type="submit">Wyślij</button>
+    </form>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- !!! -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- !!! -->
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      header ul {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        padding: 0;
+        margin: 0;
+      }
+
+      .box1 {
+        background-color: red;
+      }
+
+      .box2 {
+        background-color: blue;
+      }
+
+      .box3 {
+        background-color: aqua;
+      }
+
+      .box4 {
+        background-color: darkslategray;
+      }
+
+      .box5 {
+        background-color: violet;
+      }
+
+      .box6 {
+        background-color: brown;
+      }
+
+      .box7 {
+        background-color: chartreuse;
+      }
+
+      .box8 {
+        background-color: chocolate;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+      }
+
+      .container1 {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .box1 {
+        flex: 1 250px;
+      }
+
+      .box2 {
+        flex: 1 250px;
+      }
+
+      .container2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        /* grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); */
+      }
+
+      .nav--desktop {
+        display: flex;
+      }
+
+      .nav--mobile {
+        display: none;
+      }
+
+      @media (max-width: 320px) {
+        .nav--desktop {
+          display: none;
+        }
+
+        .nav--mobile {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>My website</div>
+      <ul class="nav--desktop">
+        <li>Home</li>
+        <li>About</li>
+        <li>Contact</li>
+      </ul>
+      <div class="nav--mobile">menu</div>
+    </header>
+    <div class="container1">
+      <div class="box box1">Lorem, ipsum dolor.</div>
+      <div class="box box2">Perferendis, neque inventore!</div>
+    </div>
+    <div class="container2">
+      <div class="box box3">Lorem, ipsum dolor.</div>
+      <div class="box box4">Perferendis, neque inventore!</div>
+      <div class="box box5">Lorem, ipsum dolor.</div>
+      <div class="box box6">Perferendis, neque inventore!</div>
+      <div class="box box7">Lorem, ipsum dolor.</div>
+      <div class="box box8">Perferendis, neque inventore!</div>
+    </div>
+  </body>
+</html>
