@@ -1,18 +1,23 @@
 import itertools
+from abc import ABC, abstractmethod
 
 
-class Formula:
+class Formula(ABC):
+    @abstractmethod
     def __str__(self):
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def variables(self) -> set[str]:
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def evaluate(self, variables: dict[str, bool]) -> bool:
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def simplify(self):
-        raise NotImplementedError
+        pass
 
     def __add__(self, other):
         return Or(self, other)
@@ -191,7 +196,7 @@ if __name__ == "__main__":
             print("str(n):", str(n))
             print("str(a):", str(a))
             print("str(o):", str(o))
-            # basic assertions
+
             self.assertEqual(str(v), "x")
             self.assertEqual(str(c_true), "T")
             self.assertEqual(str(c_false), "F")
