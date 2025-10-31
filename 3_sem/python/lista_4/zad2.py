@@ -94,7 +94,14 @@ class Not(Formula):
         return not self.operand.evaluate(variables)
 
     def simplify(self):
-        return Not(self.operand.simplify())
+        c = self.operand.simplify()
+        # ¬True => False, ¬False => True
+        if isinstance(c, Constant):
+            return Constant(not c.value)
+        # double negation: ¬(¬p) => p
+        if isinstance(c, Not):
+            return c.operand.simplify()
+        return Not(c)
 
 
 class And(Formula):
@@ -118,10 +125,19 @@ class And(Formula):
     def simplify(self):
         rv = self.right.simplify()
         lv = self.left.simplify()
-        if isinstance(rv, Constant) and rv is False:
+        # p ∧ false => false
+        if isinstance(rv, Constant) and rv.value is False:
             return Constant(False)
-        if isinstance(lv, Constant) and lv is False:
+        if isinstance(lv, Constant) and lv.value is False:
             return Constant(False)
+        # p ∧ true => p
+        if isinstance(rv, Constant) and rv.value is True:
+            return lv
+        if isinstance(lv, Constant) and lv.value is True:
+            return rv
+        # identical operands
+        if lv == rv:
+            return lv
         return And(lv, rv)
 
 
@@ -146,10 +162,19 @@ class Or(Formula):
     def simplify(self):
         rv = self.right.simplify()
         lv = self.left.simplify()
-        if isinstance(rv, Constant) and rv is True:
+        # true ∨ p => true
+        if isinstance(rv, Constant) and rv.value is True:
             return Constant(True)
-        if isinstance(lv, Constant) and lv is True:
+        if isinstance(lv, Constant) and lv.value is True:
             return Constant(True)
+        # false ∨ p => p
+        if isinstance(rv, Constant) and rv.value is False:
+            return lv
+        if isinstance(lv, Constant) and lv.value is False:
+            return rv
+        # identical operands
+        if lv == rv:
+            return lv
         return Or(lv, rv)
 
 
@@ -207,5 +232,11 @@ if __name__ == "__main__":
         def test_tautology(self):
             f = Or(Variable("p"), Not(Variable("p")))
             self.assertTrue(f.tautology())
+
+        def test_simplify(self):
+            s1 = And(Variable("p"), Constant(False)).simplify()
+            self.assertIsInstance(s1, Constant)
+            s4 = Or(Constant(True), Variable("p")).simplify()
+            self.assertIsInstance(s4, Constant)
 
     unittest.main(verbosity=2)
