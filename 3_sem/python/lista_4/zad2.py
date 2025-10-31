@@ -95,12 +95,6 @@ class Not(Formula):
 
     def simplify(self):
         c = self.operand.simplify()
-        # ¬True => False, ¬False => True
-        if isinstance(c, Constant):
-            return Constant(not c.value)
-        # double negation: ¬(¬p) => p
-        if isinstance(c, Not):
-            return c.operand.simplify()
         return Not(c)
 
 
@@ -125,20 +119,10 @@ class And(Formula):
     def simplify(self):
         rv = self.right.simplify()
         lv = self.left.simplify()
-        # p ∧ false => false
         if isinstance(rv, Constant) and rv.value is False:
             return Constant(False)
         if isinstance(lv, Constant) and lv.value is False:
             return Constant(False)
-        # p ∧ true => p
-        if isinstance(rv, Constant) and rv.value is True:
-            return lv
-        if isinstance(lv, Constant) and lv.value is True:
-            return rv
-        # identical operands
-        if lv == rv:
-            return lv
-        return And(lv, rv)
 
 
 class Or(Formula):
@@ -162,19 +146,10 @@ class Or(Formula):
     def simplify(self):
         rv = self.right.simplify()
         lv = self.left.simplify()
-        # true ∨ p => true
         if isinstance(rv, Constant) and rv.value is True:
             return Constant(True)
         if isinstance(lv, Constant) and lv.value is True:
             return Constant(True)
-        # false ∨ p => p
-        if isinstance(rv, Constant) and rv.value is False:
-            return lv
-        if isinstance(lv, Constant) and lv.value is False:
-            return rv
-        # identical operands
-        if lv == rv:
-            return lv
         return Or(lv, rv)
 
 
