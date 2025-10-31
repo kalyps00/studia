@@ -211,7 +211,9 @@ if __name__ == "__main__":
         def test_simplify(self):
             s1 = And(Variable("p"), Constant(False)).simplify()
             self.assertIsInstance(s1, Constant)
-            s4 = Or(Constant(True), Variable("p")).simplify()
-            self.assertIsInstance(s4, Constant)
+            s2 = Or(Constant(True), Variable("p")).simplify()
+            self.assertIsInstance(s2, Constant)
+            s3 = And(And(Constant(False), Variable("p")), Constant(True)).simplify()
+            self.assertIsInstance(s3, Constant)
 
     unittest.main(verbosity=2)
