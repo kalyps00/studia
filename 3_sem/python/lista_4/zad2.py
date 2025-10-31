@@ -16,7 +16,7 @@ class Formula(ABC):
         pass
 
     @abstractmethod
-    def simplify(self):
+    def simplify(self) -> "Formula":
         pass
 
     def __add__(self, other):
