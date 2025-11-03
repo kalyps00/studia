@@ -36,6 +36,10 @@ public class Pair implements Cloneable {
     }
     @Override
     public Pair clone() {
-        return new Pair(this.key, this.value);
+        try{
+           return (Pair)super.clone();
+        } catch (CloneNotSupportedException e) {
+           return null;
+        }
     }
 }

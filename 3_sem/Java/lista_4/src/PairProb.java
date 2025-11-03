@@ -13,9 +13,4 @@ public class PairProb extends Pair {
         checkProb(value);
         super.set(value);
     }
-
-    @Override
-    public PairProb clone() {
-        return new PairProb(this.key, this.get());
-    }
 }

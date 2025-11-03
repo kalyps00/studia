@@ -23,7 +23,8 @@ public class ArraySetVar extends SetVar {
     @Override
     public double get(String k) {
         for (int i = 0; i < siz; i++) {
-            if (vars[i].key.equals(k)) return vars[i].get();
+            if (vars[i].key.equals(k)) 
+                return vars[i].get();
         }
         throw new java.util.NoSuchElementException("variable not found: " + k);
     }
@@ -62,7 +63,7 @@ public class ArraySetVar extends SetVar {
         ArraySetVar copy = new ArraySetVar(this.vars.length);
         copy.siz = this.siz;
         for (int i = 0; i < this.siz; i++) {
-            copy.vars[i] = this.vars[i].clone(); // Pair.clone()
+            copy.vars[i] = this.vars[i].clone(); 
         }
         return copy;
     }
