@@ -1,8 +1,6 @@
 public interface AssociativeCollection extends Cloneable, AssocColl {
     void del(String k);
     int size();
-
-    // declare clone to indicate deep cloning is expected
     Object clone();
 
     default String defaultToString() {

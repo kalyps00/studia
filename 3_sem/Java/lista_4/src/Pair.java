@@ -34,15 +34,8 @@ public class Pair implements Cloneable {
         Pair other = (Pair) obj;
         return this.key.equals(other.key);
     }
-
-    @Override
-    public int hashCode() {
-        return key.hashCode();
-    }
-
     @Override
     public Pair clone() {
-        // shallow clone is fine: key is immutable (String) and value is primitive
         return new Pair(this.key, this.value);
     }
 }
