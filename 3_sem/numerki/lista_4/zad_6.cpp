@@ -33,7 +33,7 @@ int main()
             iter_x out = inverse_sqrt(a, x0, epsilon);
             cout << "a=" << a << ", x0=" << x0
                  << ", wynik=" << out.result
-                 << ", iters=" << out.count << endl;
+                 << ", iteracje=" << out.count << endl;
         }
     }
     return 0;
