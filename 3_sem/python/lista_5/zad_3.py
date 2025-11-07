@@ -42,11 +42,14 @@ def most_common_word(index) -> tuple[str | None, int]:
 
 
 def pages_with_word(index, word) -> list[str]:
+    if word not in index:
+        return list("")
     return list(index.get(word.lower(), {})["pages"].keys())
 
 
 if __name__ == "__main__":
     index = make_index(urls)
     word, total = most_common_word(index)
+
     print(f"Most common word: {word}, occurrences: {total}")
     print("Pages with this word:", pages_with_word(index, word))
