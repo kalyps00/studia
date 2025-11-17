@@ -1,0 +1,52 @@
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*~
+
+# Java class files and archives
+*.class
+*.jar
+*.war
+*.ear
+
+# Build output
+/out/
+/build/
+/target/
+**/bin/
+
+# IDEs
+/.idea/
+*.iml
+/.project
+/.classpath
+/.settings/
+/.vscode/
+
+# Eclipse specific
+/.metadata/
+
+# IntelliJ
+/.idea/
+*.iws
+
+# NetBeans
+/nbproject/private/
+
+# Generated doc
+**/doc/
+
+# Logs and runtime files
+rozgrywka.log
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Temporary files
+*.swp
+*.swo
