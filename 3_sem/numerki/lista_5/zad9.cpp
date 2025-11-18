@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -97,6 +96,13 @@ int main()
     auto f4pp = [](long double x)
     { return expl(x); };
 
+    auto f5 = [](long double x)
+    { return expl(x) - 2.0L; };
+    auto f5p = [](long double x)
+    { return expl(x); };
+    auto f5pp = [](long double x)
+    { return expl(x); };
+
     vector<long double> iterations1 = olver_method(f1, f1p, f1pp, 1.5L);
     vector<long double> p_values1 = calculate_p(iterations1);
 
@@ -109,6 +115,9 @@ int main()
     vector<long double> iterations4 = olver_method(f4, f4p, f4pp, 1.0L);
     vector<long double> p_values4 = calculate_p(iterations4);
 
+    vector<long double> iterations5 = olver_method(f5, f5p, f5pp, 0.5L);
+    vector<long double> p_values5 = calculate_p(iterations5);
+
     // Wypisz z wysoką precyzją
     cout.setf(std::ios::fixed);
     cout << setprecision(50);
@@ -120,6 +129,8 @@ int main()
     cout << "p=" << p_values3[0] << '\n';
 
     cout << "p=" << p_values4[0] << '\n';
+
+    cout << "p=" << p_values5[0] << '\n';
 
     return 0;
 }
