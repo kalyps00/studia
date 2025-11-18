@@ -8,7 +8,7 @@ class Queue {
   }
 
   Pop() {
-    return this.isEmpty() ? "Queue is empty" : this.items.shift();
+    return this.isEmpty() ? "Queue is empty" : this.items.shift(); // pop() i mamy LIFO
   }
 
   isEmpty() {
