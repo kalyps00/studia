@@ -6,7 +6,6 @@ import threading
 import time
 
 urls = ["https://www.forbes.pl/", "https://uwr.edu.pl/", "https://www.youtube.com/"]
-lock = threading.Lock()
 
 
 def scrape(url):
@@ -19,11 +18,14 @@ def scrape(url):
         return ""
 
 
+lock = threading.Lock()
+
+
 def cnt_words(counter, index, url):
     for word, cnt in counter.items():
         if not word:
             continue
-        with lock:  # chaneg
+        with lock:
             entry = index.setdefault(word, {"total": 0, "pages": {}})
             entry["total"] += cnt
             entry["pages"][url] = cnt
