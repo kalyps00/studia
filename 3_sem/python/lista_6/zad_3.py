@@ -11,7 +11,6 @@ urls = [
     "https://www.youtube.com/",
     "https://pomoc.margonem.pl/index/view,323",
     "https://pomoc.margonem.pl/index/view,331",
-    "https://forum.margonem.pl/?task=forum&show=posts&id=96295",
 ]
 
 
