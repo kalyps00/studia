@@ -60,7 +60,6 @@ vector<long double> calculate_p(const vector<long double> &iterations)
             p_values.push_back(p);
         }
     }
-
     return p_values;
 }
 
@@ -122,14 +121,19 @@ int main()
     cout.setf(std::ios::fixed);
     cout << setprecision(50);
 
+    cout << "Testing function: x^2 - 2\n";
     cout << "p=" << p_values1[0] << '\n';
 
+    cout << "Testing function: x^3 - 2x - 5\n";
     cout << "p=" << p_values2[0] << '\n';
 
+    cout << "Testing function: sin(x) - x/2\n";
     cout << "p=" << p_values3[0] << '\n';
 
+    cout << "Testing function: e^x + x - 2\n";
     cout << "p=" << p_values4[0] << '\n';
 
+    cout << "Testing function: e^x - 2\n";
     cout << "p=" << p_values5[0] << '\n';
 
     return 0;

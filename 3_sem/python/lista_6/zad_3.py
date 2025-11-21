@@ -2,9 +2,11 @@ import requests
 from bs4 import BeautifulSoup
 import re
 from collections import Counter
+import threading
 import time
 
 urls = ["https://www.forbes.pl/", "https://uwr.edu.pl/", "https://www.youtube.com/"]
+lock = threading.Lock()
 
 
 def scrape(url):
@@ -21,17 +23,28 @@ def cnt_words(counter, index, url):
     for word, cnt in counter.items():
         if not word:
             continue
-        entry = index.setdefault(word, {"total": 0, "pages": {}})
-        entry["total"] += cnt
-        entry["pages"][url] = cnt
+        with lock:  # chaneg
+            entry = index.setdefault(word, {"total": 0, "pages": {}})
+            entry["total"] += cnt
+            entry["pages"][url] = cnt
+
+
+def worker(url, index):
+    text = scrape(url)
+    words = re.findall(r"\w+", text.lower())
+    cnt_words(Counter(words), index, url)
 
 
 def make_index(urls):
     index = {}
+    threads = []
     for url in urls:
-        text = scrape(url)
-        words = re.findall(r"\w+", text.lower())
-        cnt_words(Counter(words), index, url)
+        t = threading.Thread(target=worker, args=(url, index))
+        threads.append(t)
+        t.start()
+    for t in threads:
+        t.join()
+
     return index
 
 
