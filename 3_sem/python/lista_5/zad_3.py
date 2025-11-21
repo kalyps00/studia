@@ -4,7 +4,14 @@ import re
 from collections import Counter
 import time
 
-urls = ["https://www.forbes.pl/", "https://uwr.edu.pl/", "https://www.youtube.com/"]
+urls = [
+    "https://www.forbes.pl/",
+    "https://uwr.edu.pl/",
+    "https://www.youtube.com/",
+    "https://pomoc.margonem.pl/index/view,323",
+    "https://pomoc.margonem.pl/index/view,331",
+    "https://forum.margonem.pl/?task=forum&show=posts&id=96295",
+]
 
 
 def scrape(url):
