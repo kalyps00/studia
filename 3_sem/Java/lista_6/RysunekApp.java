@@ -49,7 +49,7 @@ public class RysunekApp extends Frame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
-                requestFocus(); // update usuwanie nie dzialalo bez tego
+                requestFocus();
             }
 
             @Override
@@ -58,8 +58,8 @@ public class RysunekApp extends Frame {
             }
         });
 
-        setFocusable(true); // Ustawienie okna jako fokusowalnego
-        requestFocusInWindow(); // Wymuszenie fokusu na oknie
+        setFocusable(true);
+        requestFocusInWindow(); 
     }
 
     public static void main(String[] args) {

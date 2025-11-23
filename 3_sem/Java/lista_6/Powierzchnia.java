@@ -27,22 +27,22 @@ public class Powierzchnia extends Canvas {
                 if (poczatek != null) {
                     kreski.add(new Kreska(poczatek, koniec, aktualnyKolor));
                     poczatek = null;
-                    dynamicznyKoniec = null; // Reset dynamicznego końca
+                    dynamicznyKoniec = null; 
                     repaint();
                 }
             }
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                getParent().requestFocus(); // Wymuszenie fokusu na oknie po kliknięciu w powierzchnię
+                getParent().requestFocus(); 
             }
         });
 
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                dynamicznyKoniec = e.getPoint(); // Aktualizuj dynamiczny koniec
-                repaint(); // Odśwież powierzchnię
+                dynamicznyKoniec = e.getPoint(); 
+                repaint();
             }
         });
     }
@@ -53,12 +53,9 @@ public class Powierzchnia extends Canvas {
 
     @Override
     public void paint(Graphics g) {
-        // Rysuj wszystkie kreski
         for (Kreska kreska : kreski) {
             kreska.rysuj(g);
         }
-
-        // Rysuj dynamiczną szarą linię, jeśli istnieje
         if (poczatek != null && dynamicznyKoniec != null) {
             g.setColor(Color.GRAY);
             g.drawLine(poczatek.x, poczatek.y, dynamicznyKoniec.x, dynamicznyKoniec.y);
