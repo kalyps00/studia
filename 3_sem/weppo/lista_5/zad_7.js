@@ -27,7 +27,7 @@ const readFilePromise_2 = util.promisify(fs.readFile);
 const fs1 = fs.promises;
 
 //Promise::then
-readFilePromise_1("tekst.txt", "utf8")
+readFilePromise_2("tekst.txt", "utf8")
   .then((data) => console.log("Dane (Promise + then):", data))
   .catch((err) => console.error("Error:", err));
 
@@ -42,3 +42,7 @@ async function readFileNew() {
 }
 
 readFileNew();
+
+readFilePromise_2("tekst.txt", "utf8").then((data) => console.log("Dane (util.promisify):", data));
+
+fs1.readFile("tekst.txt", "utf8").then((data) => console.log("Dane (fs.promises):", data));
