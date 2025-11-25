@@ -24,7 +24,7 @@ function readFilePromise_1(path, encoding) {
 const readFilePromise_2 = util.promisify(fs.readFile);
 
 //fs.promises
-const fs1 = require("fs").promises;
+const fs1 = fs.promises;
 
 //Promise::then
 readFilePromise_1("tekst.txt", "utf8")
