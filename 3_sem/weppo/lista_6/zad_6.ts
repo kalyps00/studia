@@ -11,6 +11,8 @@ type StringColors = Extract<Colors, string>;
 type NonStringColor = Exclude<Colors, string>;
 
 //Partial,Record,Required,Readonly
+
+//Partial
 //zmienia wszystkie properties w obiekcie na opcjonalne wiec mozemy uzywac pojedynczych
 interface Point {
   x: number;
@@ -29,7 +31,7 @@ interface Car {
 let myCar: Required<Car> = {
   make: "Ford",
   model: "Focus",
-  mileage: 150000, // program wymaga teraz 'mileage' pomimo ustawienia tego na opcjonalne w interfejsie
+  mileage: 150000,
 };
 
 //Record pozwala nam jednolinijkowcem stworzyc obiekt postaci <key,value>
