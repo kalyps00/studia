@@ -9,7 +9,7 @@ function memoize(fn: (n: number) => number): (n: number) => number {
   let cache: { [key: number]: number } = {};
   return function (n: number): number {
     if (n in cache) {
-      return cache[n];
+      return cache[n]!;
     } else {
       var result = fn(n);
       cache[n] = result;

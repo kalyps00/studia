@@ -34,5 +34,5 @@ function logPerson(person: Person) {
   console.log(` - ${person.name}, ${person.age}, ${additionalInformation}`);
 }
 
-logPerson(persons[0]);
-logPerson(persons[1]);
+logPerson(persons[0]!);
+logPerson(persons[1]!);
