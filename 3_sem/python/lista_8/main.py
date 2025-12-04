@@ -92,9 +92,8 @@ if __name__ == "__main__":
         ax_pred.plot(
             months_pred,
             predicted_values,
-            marker="x",
-            linestyle="--",
-            label=f"{code} (pred)",
+            marker="o",
+            label=code,
         )
 
     ax_pred.legend()
