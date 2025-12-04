@@ -26,7 +26,7 @@ const persons: Person[] = [
 function isAdmin(person: Person): person is Admin {
   // type predicate
   if ("role" in person) {
-    return true;
+    return true;  
   }
   return false;
 }
