@@ -55,7 +55,7 @@ def predict_rates(history_series: pd.Series) -> np.ndarray:
 
 if __name__ == "__main__":
     years = [2020, 2021]
-    currency_codes = ["TRY", "ZAR"]  # Lira turecka, Rand południowoafrykański
+    currency_codes = ["TRY", "ZAR", "USD"]  # Lira turecka, Rand południowoafrykański
     all_history = {code: pd.Series(dtype="float64") for code in currency_codes}
     fig, axes = plt.subplots(1, len(years) + 1, figsize=(18, 6))
     fig.suptitle(
@@ -73,8 +73,12 @@ if __name__ == "__main__":
                     all_history[code] = rates
                 else:
                     all_history[code] = pd.concat([all_history[code], rates])
-                months = pd.DatetimeIndex(rates.index).month
-                ax.plot(months, rates.values, marker="o", label=code)
+                ax.plot(
+                    pd.DatetimeIndex(rates.index).month,
+                    rates.values,
+                    marker="o",
+                    label=code,
+                )
 
         ax.legend()
         ax.grid(True)
