@@ -208,11 +208,12 @@ public class SolitaireApp extends JFrame {
 
     private void showAboutGame() {
         JOptionPane.showMessageDialog(this,
-            "Samotnik to gra logiczna dla jednej osoby.\n" +
-            "Celem gry jest pozostawienie na planszy tylko jednego piona,\n" +
-            "Ruch polega na przeskoczeniu pionem sąsiedniego piona na puste pole.\n" +
-            "Zbity pion jest usuwany z planszy.",
-            "O grze", JOptionPane.INFORMATION_MESSAGE);
+            """
+            Samotnik to gra logiczna dla jednej osoby.
+            Celem gry jest pozostawienie na planszy tylko jednego piona,
+            Ruch polega na przeskoczeniu pionem sąsiedniego piona na puste pole.
+            Zbity pion jest usuwany z planszy.,
+            O grze"""," ", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void showAboutApp() {
