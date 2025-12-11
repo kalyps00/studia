@@ -140,7 +140,7 @@ curve_y = spline_solver.get_interpolated_values(Y_data, M_y, u_grid)
 # 5. Rysowanie wyniku
 plt.figure(figsize=(10, 6))
 plt.plot(curve_x, curve_y, "b-", linewidth=2, label="NIFS3 Parametryczna")
-# plt.plot(X_data, Y_data, "ro", markersize=3, label="Węzły interpolacji")
+plt.plot(X_data, Y_data, "ro", markersize=3, label="Węzły interpolacji")
 plt.title("Pies?")
 plt.xlabel("X(t)")
 plt.ylabel("Y(t)")
