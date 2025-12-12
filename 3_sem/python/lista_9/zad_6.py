@@ -11,7 +11,7 @@ def encrypt_xor(image, key):
 
 
 def decrypt_xor(encrypted_image, key):
-    return np.bitwise_xor(encrypted_image, key)
+    return encrypt_xor(encrypted_image, key)
 
 
 def encrypt_modulo(image, key):
