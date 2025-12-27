@@ -8,7 +8,8 @@ Opis funkcji:
 - Podgląd tła (klawisz b).
 - Ukrywanie punktów kontrolnych (klawisz h).
 - Podglad każdej z krzywych osobno poprzez zmiane ich koloru (klawisz c)
-
+- (obecnie program uzywa recznie dodanych gestosci ktore w mojej opini
+   daja najlepszy efekt wizualny)
 Autor: Kamil Pawlikowski
 """
 
@@ -33,11 +34,11 @@ LINE_WIDTH_BACKGROUND = 2
 # Możesz ręcznie edytować te wartości dla każdej krzywej
 # fmt: off
 DENSITIES = [
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10
+    3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    3, 3
 ]
-DEFAULT_DENSITY = 10
+DEFAULT_DENSITY = 3
 # fmt: on
 
 
