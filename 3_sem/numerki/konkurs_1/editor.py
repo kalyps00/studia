@@ -1,3 +1,17 @@
+"""
+Edytor Krzywych NIFS3
+---------------------
+Opis funkcji:
+- Tworzenie i edycja krzywych sklejanych NIFS3.
+- Obsługa wczytywania i zapisywania punktów do pliku JSON.
+- Możliwość zmiany gęstości punktów (klawisze +/-).
+- Podgląd tła (klawisz b).
+- Ukrywanie punktów kontrolnych (klawisz h).
+- Podglad każdej z krzywych osobno poprzez zmiane ich koloru (klawisz c)
+
+Autor: Kamil Pawlikowski
+"""
+
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import json
