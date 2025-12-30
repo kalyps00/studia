@@ -27,7 +27,7 @@ DENSITIES_FILE = "densities.json"
 IMAGE_FILE = "napis.jpg"
 
 # Globalne ustawienia grubości linii
-LINE_WIDTH_SPLINE = 1.2
+LINE_WIDTH_SPLINE = 1.4
 LINE_WIDTH_BACKGROUND = 2
 
 # Tablica gęstości punktów dla poszczególnych krzywych (ilość punktów na segment)
