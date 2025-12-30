@@ -20,6 +20,8 @@ import os
 import numpy as np
 import math
 import copy
+import zipfile
+import shutil
 from spline import SplineSystem
 
 DATA_FILE = "points.json"
@@ -250,34 +252,30 @@ class CurveEditor:
         return best_idx, best_dist, best_proj
 
     def on_press(self, event):
-        # Ignoruj kliknięcia, jeśli aktywne jest narzędzie paska narzędzi (np. zoom, pan)
+        # Ignoruj jeśli aktywne narzędzia matplotliba
         if self.ax.figure.canvas.toolbar and self.ax.figure.canvas.toolbar.mode != "":
             return
 
         if event.inaxes != self.ax:
             return
 
-        if event.button == 1:  # Left Click
-            # Check for Shift key to force add point
+        if event.button == 1:  # LPM
+            # Shift wymusza dodawanie punktu
             force_add = event.key == "shift"
 
-            # 1. Check if clicking on a point to drag
+            # 1. Sprawdź czy kliknięto w punkt (przesuwanie)
             if not force_add:
                 dist, idx = self.get_closest_point_index(event.xdata, event.ydata)
                 if dist < self.epsilon:
                     self.dragging_point_index = idx
                     return
 
-            # 2. Check if clicking on a segment to insert
-            # If force_add is True (Shift pressed), we skipped step 1 (drag),
-            # so we allow checking for segment insertion here to enable adding points
-            # very close to existing ones (on the line).
+            # 2. Sprawdź czy kliknięto w linię (wstawianie punktu)
             seg_idx, seg_dist, proj_point = self.get_closest_segment_index(
                 event.xdata, event.ydata
             )
             if seg_dist < self.epsilon:
-                # Check if we are actually projecting onto the start or end of the curve
-                # If so, we should probably append/prepend (Step 3) instead of inserting into the segment
+                # Sprawdź czy nie kliknięto w skrajne węzły
                 is_start_node = (
                     seg_idx == 0
                     and np.linalg.norm(np.array(proj_point) - np.array(self.points[0]))
@@ -290,16 +288,13 @@ class CurveEditor:
                 )
 
                 if not (is_start_node or is_end_node):
-                    # Insert point
+                    # Wstaw punkt
                     self.points.insert(seg_idx + 1, [event.xdata, event.ydata])
-                    self.dragging_point_index = (
-                        seg_idx + 1
-                    )  # Start dragging the new point immediately
+                    self.dragging_point_index = seg_idx + 1
                     self.update_plot()
                     return
 
-            # 3. If clicked far away, append to the closest end
-            # Sprawdźmy czy kliknięto blisko początku lub końca krzywej, żeby przedłużyć
+            # 3. Dodawanie na końcach krzywej
             if self.points:
                 start_dist = math.hypot(
                     self.points[0][0] - event.xdata, self.points[0][1] - event.ydata
@@ -307,9 +302,6 @@ class CurveEditor:
                 end_dist = math.hypot(
                     self.points[-1][0] - event.xdata, self.points[-1][1] - event.ydata
                 )
-
-                # Jeśli kliknięto w miarę blisko końca , to dodaj na koniec
-                # Albo po prostu zawsze dodawaj na koniec jeśli nic innego nie kliknięto?
 
                 if end_dist <= start_dist:
                     self.points.append([event.xdata, event.ydata])
@@ -320,14 +312,14 @@ class CurveEditor:
                 self.update_plot()
                 return
 
-            # If empty
+            # Jeśli krzywa pusta
             if not self.points:
                 self.points.append([event.xdata, event.ydata])
                 self.dragging_point_index = 0
                 self.update_plot()
 
-        elif event.button == 3:  # Right Click
-            # Delete point
+        elif event.button == 3:  # PPM
+            # Usuwanie punktu
             dist, idx = self.get_closest_point_index(event.xdata, event.ydata)
             if dist < self.epsilon:
                 self.points.pop(idx)
@@ -366,6 +358,65 @@ def load_data():
     return []
 
 
+def save_preview_image(data):
+    if not os.path.exists(IMAGE_FILE):
+        return
+
+    try:
+        img = mpimg.imread(IMAGE_FILE)
+        fig, ax = plt.subplots(figsize=(12, 8))
+        # Ustawiamy alpha=0, aby ukryć tło, ale zachować układ współrzędnych
+        ax.imshow(img, alpha=0)
+        ax.axis("off")
+
+        # Automatyczne przybliżenie
+        all_xs = []
+        all_ys = []
+        for curve in data:
+            for p in curve:
+                all_xs.append(p[0])
+                all_ys.append(p[1])
+
+        if all_xs and all_ys:
+            min_x, max_x = min(all_xs), max(all_xs)
+            min_y, max_y = min(all_ys), max(all_ys)
+
+            width = max_x - min_x
+            height = max_y - min_y
+            pad_x = max(width * 0.05, 20)
+            pad_y = max(height * 0.05, 20)
+
+            ax.set_xlim(min_x - pad_x, max_x + pad_x)
+            ax.set_ylim(max_y + pad_y, min_y - pad_y)
+
+        for i, curve in enumerate(data):
+            if len(curve) < 2:
+                continue
+
+            try:
+                pts = np.array(curve)
+                t = np.linspace(0, 1, len(curve))
+                solver = SplineSystem(t)
+                Mx = solver.solve_moments(pts[:, 0])
+                My = solver.solve_moments(pts[:, 1])
+
+                density = DENSITIES[i] if i < len(DENSITIES) else DEFAULT_DENSITY
+                n_u = max(2, (len(curve) - 1) * density)
+                u = np.linspace(0, 1, n_u)
+
+                cx = solver.get_interpolated_values(pts[:, 0], Mx, u)
+                cy = solver.get_interpolated_values(pts[:, 1], My, u)
+                ax.plot(cx, cy, "-", color="red", linewidth=LINE_WIDTH_SPLINE)
+            except:
+                pass
+
+        plt.savefig("preview.png", bbox_inches="tight", pad_inches=0, dpi=1000)
+        plt.close(fig)
+        print("Zapisano podgląd do preview.png")
+    except Exception as e:
+        print(f"Błąd zapisu podglądu: {e}")
+
+
 def save_data(data):
     rounded_data = [[[round(p[0], 2), round(p[1], 2)] for p in curve] for curve in data]
 
@@ -375,6 +426,82 @@ def save_data(data):
         f"Zapisano {len(data)} krzywych do {DATA_FILE} (zaokrąglono do 2 miejsc po przecinku)"
     )
     save_densities()
+    save_preview_image(data)
+
+
+def generate_submission_files(data, index_num):
+    print(f"\nGenerowanie plików konkursowych dla indeksu: {index_num}...")
+
+    # 1. Obrazek (kopia preview.png)
+    image_filename = f"konkurs-{index_num}.png"
+    if os.path.exists("preview.png"):
+        shutil.copy("preview.png", image_filename)
+        print(f"Utworzono {image_filename}")
+    else:
+        # Spróbuj wygenerować jeśli nie ma
+        save_preview_image(data)
+        if os.path.exists("preview.png"):
+            shutil.copy("preview.png", image_filename)
+            print(f"Utworzono {image_filename}")
+        else:
+            print("Ostrzeżenie: Nie udało się utworzyć pliku graficznego.")
+
+    # 2. Plik z danymi i podsumowanie
+    data_filename = f"konkurs-{index_num}-dane.txt"
+    summary_filename = f"konkurs-{index_num}-podsumowanie.txt"
+
+    total_points = 0
+    total_u_size = 0
+    valid_curves_count = 0
+
+    with open(data_filename, "w") as f:
+        for i, curve in enumerate(data):
+            if len(curve) < 2:
+                continue
+
+            valid_curves_count += 1
+            pts = np.array(curve)
+            x = pts[:, 0]
+            y = pts[:, 1]
+            t = np.linspace(0, 1, len(curve))
+
+            density = DENSITIES[i] if i < len(DENSITIES) else DEFAULT_DENSITY
+            n_u = max(2, (len(curve) - 1) * density)
+            u = np.linspace(0, 1, n_u)
+
+            total_points += len(curve)
+            total_u_size += len(u)
+
+            f.write(f"x := {x.tolist()}\n")
+            f.write(f"y := {y.tolist()}\n")
+            f.write(f"t := {t.tolist()}\n")
+            f.write(f"u := {u.tolist()}\n")
+            f.write("\n")
+
+    print(f"Utworzono {data_filename}")
+
+    with open(summary_filename, "w") as f:
+        # <liczba użytych NIFS3>, <liczba wszystkich punktów interpolacji>, <suma rozmiarów wszystkich tablic u>
+        f.write(f"{valid_curves_count}, {total_points}, {total_u_size}")
+    print(f"Utworzono {summary_filename}")
+
+    # 3. Archiwum ZIP
+    zip_filename = f"konkurs-{index_num}.zip"
+    with zipfile.ZipFile(zip_filename, "w") as zf:
+        # Kod źródłowy
+        if os.path.exists("editor.py"):
+            zf.write("editor.py")
+        if os.path.exists("spline.py"):
+            zf.write("spline.py")
+        # Pliki z danymi
+        if os.path.exists(DATA_FILE):
+            zf.write(DATA_FILE)
+        if os.path.exists(DENSITIES_FILE):
+            zf.write(DENSITIES_FILE)
+        if os.path.exists(IMAGE_FILE):
+            zf.write(IMAGE_FILE)
+    print(f"Utworzono {zip_filename}")
+    print("Gotowe! Pliki konkursowe zostały wygenerowane.")
 
 
 def add_curve(data):
@@ -482,7 +609,7 @@ class CurvesViewer:
     def __init__(self, data):
         self.data = data
         self.show_points = True
-        self.use_colors = True
+        self.use_colors = False
         self.point_artists = []
         self.text_artists = []
         self.spline_artists = []
@@ -541,6 +668,7 @@ class CurvesViewer:
             ys = [p[1] for p in curve]
 
             color = colors[i % len(colors)]  # Wybierz kolor cyklicznie
+            initial_color = color if self.use_colors else "red"
 
             # Rysuj splajn
             line = None
@@ -552,27 +680,27 @@ class CurvesViewer:
                     Mx = solver.solve_moments(pts[:, 0])
                     My = solver.solve_moments(pts[:, 1])
 
-                    # Dynamiczne obliczanie rozmiaru u (zgodnie z generate_submission.py)
-                    # Pobieramy gęstość z tablicy DENSITIES lub używamy domyślnej
+                    # Dynamiczne obliczanie rozmiaru u
+                    # Ustalanie gęstości
                     density = DENSITIES[i] if i < len(DENSITIES) else DEFAULT_DENSITY
                     n_u = max(2, (len(curve) - 1) * density)
                     u = np.linspace(0, 1, n_u)
 
-                    # Zliczamy faktycznie użyte punkty
+                    # Zliczamy punkty
                     self.total_u_size += len(u)
 
                     cx = solver.get_interpolated_values(pts[:, 0], Mx, u)
                     cy = solver.get_interpolated_values(pts[:, 1], My, u)
                     (line,) = self.ax.plot(
-                        cx, cy, "-", color=color, linewidth=LINE_WIDTH_SPLINE
+                        cx, cy, "-", color=initial_color, linewidth=LINE_WIDTH_SPLINE
                     )
                 except:
                     (line,) = self.ax.plot(
-                        xs, ys, "-", color=color, linewidth=LINE_WIDTH_SPLINE
+                        xs, ys, "-", color=initial_color, linewidth=LINE_WIDTH_SPLINE
                     )
             else:
                 (line,) = self.ax.plot(
-                    xs, ys, "-", color=color, linewidth=LINE_WIDTH_SPLINE
+                    xs, ys, "-", color=initial_color, linewidth=LINE_WIDTH_SPLINE
                 )
 
             if line:
@@ -580,7 +708,12 @@ class CurvesViewer:
 
             # Rysuj punkty i tekst (zachowaj referencje)
             (points_line,) = self.ax.plot(
-                xs, ys, "o", color=color, markersize=3, markeredgecolor="white"
+                xs,
+                ys,
+                "o",
+                color=initial_color if self.use_colors else "yellow",
+                markersize=3,
+                markeredgecolor="white" if self.use_colors else "none",
             )
             self.point_artists.append((points_line, color))
 
@@ -664,7 +797,10 @@ def main():
         elif choice == "4":
             show_curves(data)
         elif choice == "5":
+            index_num = "354708"
             save_data(data)
+            if index_num:
+                generate_submission_files(data, index_num)
             break
         else:
             print("Nieznana opcja.")
