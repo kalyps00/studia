@@ -31,7 +31,6 @@ LINE_WIDTH_SPLINE = 1.6
 LINE_WIDTH_BACKGROUND = 2
 
 # Tablica gęstości punktów dla poszczególnych krzywych (ilość punktów na segment)
-# Możesz ręcznie edytować te wartości dla każdej krzywej
 # fmt: off
 DENSITIES = [
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -51,7 +50,7 @@ class CurveEditor:
         self.curve_index = curve_index
         self.mode = mode
         self.density = density
-        self.epsilon = epsilon  # Pixel distance tolerance
+        self.epsilon = epsilon
         self.show_points = True  # Flaga widoczności punktów
 
         self.dragging_point_index = None
@@ -77,11 +76,11 @@ class CurveEditor:
             "motion_notify_event", self.on_motion
         )
         self.cid_key = ax.figure.canvas.mpl_connect("key_press_event", self.on_key)
-        # Dodaj obsługę zamykania okna, aby wyczyścić eventy
+        # obsługa zamykania okna, aby wyczyścić eventy
         self.cid_close = ax.figure.canvas.mpl_connect("close_event", self.on_close)
 
     def on_close(self, event):
-        # Rozłącz eventy przy zamykaniu, aby uniknąć błędów Tkinter
+        # rozłącz eventy przy zamykaniu
         try:
             self.ax.figure.canvas.mpl_disconnect(self.cid_press)
             self.ax.figure.canvas.mpl_disconnect(self.cid_release)
@@ -95,6 +94,33 @@ class CurveEditor:
         if event.key == "h":
             self.show_points = not self.show_points
             self.update_plot()
+
+            if self.show_points and self.points:
+                # Przybliż do edytowanej krzywej
+                xs = [p[0] for p in self.points]
+                ys = [p[1] for p in self.points]
+                min_x, max_x = min(xs), max(xs)
+                min_y, max_y = min(ys), max(ys)
+
+                width = max_x - min_x
+                height = max_y - min_y
+                pad_x = max(width * 0.2, 50)
+                pad_y = max(height * 0.2, 50)
+
+                self.ax.set_xlim(min_x - pad_x, max_x + pad_x)
+                self.ax.set_ylim(max_y + pad_y, min_y - pad_y)
+            else:
+                # Przybliż do całości (na maxa - do rozmiaru obrazka)
+                if self.ax.images:
+                    img = self.ax.images[0]
+                    extent = img.get_extent()
+                    self.ax.set_xlim(extent[0], extent[1])
+                    self.ax.set_ylim(extent[2], extent[3])
+                else:
+                    self.ax.autoscale()
+
+            self.ax.figure.canvas.draw()
+
         elif event.key == "+" or event.key == "=":
             self.density += 1
             self.update_global_density()
@@ -165,7 +191,7 @@ class CurveEditor:
             xs = [p[0] for p in self.points]
             ys = [p[1] for p in self.points]
 
-            # Rysuj łamaną kontrolną i punkty
+            # punkty
             if self.show_points:
                 self.points_plot.set_data(xs, ys)
             else:
@@ -272,7 +298,7 @@ class CurveEditor:
                     self.update_plot()
                     return
 
-            # 3. If clicked far away, append to the closest end?
+            # 3. If clicked far away, append to the closest end
             # Sprawdźmy czy kliknięto blisko początku lub końca krzywej, żeby przedłużyć
             if self.points:
                 start_dist = math.hypot(
@@ -282,9 +308,8 @@ class CurveEditor:
                     self.points[-1][0] - event.xdata, self.points[-1][1] - event.ydata
                 )
 
-                # Jeśli kliknięto w miarę blisko końca (np. 50px), to dodaj na koniec
+                # Jeśli kliknięto w miarę blisko końca , to dodaj na koniec
                 # Albo po prostu zawsze dodawaj na koniec jeśli nic innego nie kliknięto?
-                # Niech będzie: zawsze dodaj na koniec, chyba że bliżej jest początek (wtedy insert na start)
 
                 if end_dist <= start_dist:
                     self.points.append([event.xdata, event.ydata])
