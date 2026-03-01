@@ -1,0 +1,3 @@
+[submodule "4_sem/uwr-react"]
+	path = 4_sem/uwr-react
+	url = git@github.com:kalyps00/uwr-react.git
