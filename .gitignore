@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.venv/
+venv/
+ENV/
+env/
+.ipynb_checkpoints
+
+# C/C++
+*.o
+*.out
+*.exe
+*.obj
+*.a
+*.so
+*.dll
+*.dylib
+*.gch
+*.pch
+*.dSYM/
+*.su
+*.idb
+*.pdb
+core
+
+# Compiled executables (common names)
+a.out
+tempCodeRunnerFile
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.bak
+*.tmp
+
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Temporary files
+*.cache
+*.temp
+tmp/
+temp/
+tests/
+kuba
