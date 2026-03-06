@@ -87,9 +87,6 @@ def test_programs(programs, test_dir="tests"):
             return
 
     results = {prog: [] for prog in programs}
-    max_diff = 0
-    max_diff_test = None
-    max_diff_times = None
     wrong_results_count = 0
     wrong_results_tests = []
 
@@ -120,14 +117,7 @@ def test_programs(programs, test_dir="tests"):
             for prog in programs:
                 print(f"    {prog}: {outputs[prog]}")
 
-        # Oblicz różnicę czasów
-        valid_times = [t for t in times.values() if t is not None]
-        if len(valid_times) >= 2:
-            diff = max(valid_times) - min(valid_times)
-            if diff > max_diff:
-                max_diff = diff
-                max_diff_test = test_name
-                max_diff_times = times.copy()
+        # Usunięto sekcję o największej różnicy czasów
 
         # Pokaż progress co 10 testów
         if (i + 1) % 10 == 0:
@@ -149,30 +139,39 @@ def test_programs(programs, test_dir="tests"):
         if len(wrong_results_tests) > 5:
             print(f"   ... i {len(wrong_results_tests) - 5} więcej")
 
+    # Ranking wg średniego czasu
+    ranking = []
     for prog in programs:
         valid_times = [t for t in results[prog] if t is not None]
         if valid_times:
             avg_time = sum(valid_times) / len(valid_times)
             total_time = sum(valid_times)
-            print(f"\n{prog}:")
-            print(f"  Średni czas: {avg_time:.4f}s")
-            print(f"  Łączny czas: {total_time:.4f}s")
-            print(f"  Min/Max: {min(valid_times):.4f}s / {max(valid_times):.4f}s")
+            ranking.append(
+                (avg_time, prog, total_time, min(valid_times), max(valid_times))
+            )
 
-    if max_diff_test:
-        print(f"\n" + "=" * 70)
-        print(f"NAJWIĘKSZA RÓŻNICA CZASÓW: {max_diff:.4f}s")
-        print(f"Test: {max_diff_test}")
-        print("-" * 70)
-        for prog, t in max_diff_times.items():
-            if t is not None:
-                print(f"  {prog}: {t:.4f}s")
-        print("=" * 70)
+    ranking.sort()
+    print("\n" + "=" * 70)
+    print("RANKING PROGRAMÓW WG ŚREDNIEGO CZASU")
+    print("=" * 70)
+    for i, (avg_time, prog, total_time, min_time, max_time) in enumerate(ranking, 1):
+        print(f"{i}. {prog}")
+        print(f"   Średni czas: {avg_time:.4f}s")
+        print(f"   Łączny czas: {total_time:.4f}s")
+        print(f"   Min/Max: {min_time:.4f}s / {max_time:.4f}s")
 
 
 if __name__ == "__main__":
     TEST_DIR = "tests"
-    PROGRAMS = ["./zadA", "./miasta_prac_1"]
+    PROGRAMS = [
+        "./zadA_v2",
+        # "./zadA",
+        "./miasta_prac_1",
+        "./miasta_prac_1_v2",
+        "./opt",
+        "./opt_v2",
+        "./opt_v3",
+    ]
 
     # Sprawdź flagę --new
     if "--new" in sys.argv:
