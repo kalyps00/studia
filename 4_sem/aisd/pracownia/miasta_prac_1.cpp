@@ -1,27 +1,21 @@
-#include <iostream>
+#include <cstdio>
 #include <cstdint>
-using namespace std;
 char grid[2007][2007];
 uint32_t queue[2007 * 2007], head, tail;
-uint32_t masks[100];
+uint32_t masks['F' + 10];
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
     masks['B'] = 0b1100;
     masks['C'] = 0b1001;
     masks['D'] = 0b0011;
     masks['E'] = 0b0110;
     masks['F'] = 0b1111;
     int n, m, towns = 0;
-    cin >> n >> m;
+    scanf("%d %d\n", &n, &m);
     for (int i = 1; i < n + 1; i++)
     {
-        for (int j = 1; j < m + 1; j++)
-        {
-            cin >> grid[i][j];
-        }
+        fgets(grid[i] + 1, m + 2, stdin);
     }
     for (int i = 1; i < n + 1; i++)
     {
@@ -58,5 +52,5 @@ int main()
             }
         }
     }
-    cout << towns;
+    printf("%d\n", towns);
 }
