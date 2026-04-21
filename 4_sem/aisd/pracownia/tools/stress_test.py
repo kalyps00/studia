@@ -17,6 +17,27 @@ TIMEOUT_PER_TEST = 10
 SPINNER_FRAMES = ["|", "/", "-", "\\"]
 
 
+def parse_massif_peak_bytes(massif_path: Path) -> int:
+    peak_bytes = 0
+    current = {"heap": 0, "extra": 0, "stack": 0}
+
+    with massif_path.open() as handle:
+        for line in handle:
+            stripped = line.strip()
+            if stripped.startswith("mem_heap_B="):
+                current["heap"] = int(stripped.split("=", 1)[1])
+            elif stripped.startswith("mem_heap_extra_B="):
+                current["extra"] = int(stripped.split("=", 1)[1])
+            elif stripped.startswith("mem_stacks_B="):
+                current["stack"] = int(stripped.split("=", 1)[1])
+                peak_bytes = max(
+                    peak_bytes,
+                    current["heap"] + current["extra"] + current["stack"],
+                )
+
+    return peak_bytes
+
+
 def clear_console() -> None:
     if sys.stdout.isatty():
         sys.stdout.write("\033[2J\033[H")
@@ -65,7 +86,7 @@ def main() -> int:
         "--checkers",
         type=str,
         nargs="+",
-        required=True,
+        required=False,
         help="Paths to reference checkers/solutions (space-separated)",
     )
     parser.add_argument(
@@ -141,6 +162,28 @@ def main() -> int:
         action="store_true",
         help="Shortcut for --infinite --no-timeout --full-task-limits",
     )
+    parser.add_argument(
+        "--valgrind-massif",
+        action="store_true",
+        help="Run the tested program under Valgrind massif and save a memory profile",
+    )
+    parser.add_argument(
+        "--massif-out-file",
+        type=str,
+        default=None,
+        help="Path to massif output file (default: <output-dir>/massif.out)",
+    )
+    parser.add_argument(
+        "--save-input-file",
+        type=str,
+        default=None,
+        help="Save each generated test input to this file (useful with --tests 1)",
+    )
+    parser.add_argument(
+        "--check-ram",
+        action="store_true",
+        help="Run one maximal test under Valgrind massif and print whether RAM limit is exceeded",
+    )
 
     # Task-specific parameters
     parser.add_argument(
@@ -168,6 +211,13 @@ def main() -> int:
         args.infinite = True
         args.no_timeout = True
         args.full_task_limits = True
+
+    if args.check_ram:
+        args.tests = 1
+        args.infinite = False
+        args.no_timeout = True
+        args.full_task_limits = True
+        args.valgrind_massif = True
 
     # Setup generator
     if args.task not in TASK_GENERATORS:
@@ -200,74 +250,126 @@ def main() -> int:
         build_dir = Path(__file__).resolve().parent / build_dir
     build_dir.mkdir(parents=True, exist_ok=True)
 
+    output_dir = Path(args.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    program_run_prefix = []
+    if args.valgrind_massif:
+        if args.infinite:
+            print("--valgrind-massif cannot be used with --infinite")
+            return 1
+        if args.tests != 1:
+            print(
+                "--valgrind-massif requires --tests 1 to avoid overwriting massif snapshots"
+            )
+            return 1
+
+        massif_out = (
+            Path(args.massif_out_file)
+            if args.massif_out_file
+            else output_dir / "massif.out"
+        )
+        if not massif_out.is_absolute():
+            massif_out = Path.cwd() / massif_out
+        massif_out.parent.mkdir(parents=True, exist_ok=True)
+
+        program_run_prefix = [
+            "valgrind",
+            "--tool=massif",
+            "--stacks=yes",
+            f"--massif-out-file={massif_out}",
+            "--quiet",
+        ]
+    else:
+        massif_out = None
+
     # Setup program and checkers
     try:
+        program_memory_limit = (
+            None if (args.valgrind_massif or args.check_ram) else memory_limit_mb
+        )
+
+        if not args.check_ram and not args.checkers:
+            print("--checkers is required unless --check-ram is used")
+            return 1
+
         program = ProgramRunner(
             args.program,
             timeout=timeout_per_test,
-            memory_limit_mb=memory_limit_mb,
+            memory_limit_mb=program_memory_limit,
             build_dir=str(build_dir),
+            run_prefix=program_run_prefix,
+            static_link=not (args.valgrind_massif or args.check_ram),
         )
         program._ensure_compiled()
     except Exception as e:
         print(f"Failed to setup program: {e}")
         return 1
 
-    try:
-        checkers = [
-            ProgramRunner(
-                path,
-                timeout=timeout_per_test,
-                memory_limit_mb=memory_limit_mb if args.limit_checkers_memory else None,
-                build_dir=str(build_dir),
-            )
-            for path in args.checkers
-        ]
-        for checker in checkers:
-            checker._ensure_compiled()
-    except Exception as e:
-        print(f"Failed to compile checkers: {e}")
-        return 1
+    checkers = []
+    checker_names = []
+    checker_max_n = []
+    if not args.check_ram:
+        try:
+            checkers = [
+                ProgramRunner(
+                    path,
+                    timeout=timeout_per_test,
+                    memory_limit_mb=(
+                        memory_limit_mb if args.limit_checkers_memory else None
+                    ),
+                    build_dir=str(build_dir),
+                )
+                for path in args.checkers
+            ]
+            for checker in checkers:
+                checker._ensure_compiled()
+        except Exception as e:
+            print(f"Failed to compile checkers: {e}")
+            return 1
 
     # Assign checker names
-    if args.checker_names:
-        checker_names = args.checker_names
-    else:
-        checker_names = [Path(path).stem for path in args.checkers]
+    if not args.check_ram:
+        if args.checker_names:
+            checker_names = args.checker_names
+        else:
+            checker_names = [Path(path).stem for path in args.checkers]
 
-    if len(checker_names) != len(checkers):
-        checker_names = [f"Checker{i}" for i in range(len(checkers))]
+        if len(checker_names) != len(checkers):
+            checker_names = [f"Checker{i}" for i in range(len(checkers))]
 
-    if args.checker_max_n:
-        if len(args.checker_max_n) != len(checkers):
-            print("--checker-max-n must have same length as --checkers")
-            return 1
-        checker_max_n = args.checker_max_n
-    else:
-        checker_max_n = [infer_checker_max_n(args.task, p) for p in args.checkers]
+        if args.checker_max_n:
+            if len(args.checker_max_n) != len(checkers):
+                print("--checker-max-n must have same length as --checkers")
+                return 1
+            checker_max_n = args.checker_max_n
+        else:
+            checker_max_n = [infer_checker_max_n(args.task, p) for p in args.checkers]
 
     # Setup output
-    output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
     errors_file = output_dir / "test_errors.txt"
 
     # Setup RNG
     if args.seed is not None:
         random.seed(args.seed)
 
-    finite_limits = [x for x in checker_max_n if x is not None]
-    if finite_limits and len(finite_limits) == len(checkers):
-        supported_max_n = max(finite_limits)
-        if max_n > supported_max_n:
-            max_n = supported_max_n
-            print(
-                f"Info: max-n reduced to {max_n} based on checker limits ({checker_max_n})."
-            )
+    if not args.check_ram:
+        finite_limits = [x for x in checker_max_n if x is not None]
+        if finite_limits and len(finite_limits) == len(checkers):
+            supported_max_n = max(finite_limits)
+            if max_n > supported_max_n:
+                max_n = supported_max_n
+                print(
+                    f"Info: max-n reduced to {max_n} based on checker limits ({checker_max_n})."
+                )
 
     # Print info
     print(f"Task: {args.task}")
     print(f"Program: {args.program}")
-    print(f"Checkers: {', '.join(checker_names)}")
+    if args.check_ram:
+        print("Checkers: none (RAM check mode)")
+    else:
+        print(f"Checkers: {', '.join(checker_names)}")
     print(f"Parameters: n<={max_n}, h<={max_h}, sum_limit<={sum_limit}")
     print(
         f"Task limits: RAM={constraints.memory_limit_mb} MB | Time={constraints.time_limit_s}s"
@@ -277,7 +379,57 @@ def main() -> int:
     print(f"Checker max-n: {checker_max_n}")
     print(f"Build dir: {build_dir}")
     print(f"Output directory: {output_dir}")
+    if args.valgrind_massif:
+        print("Valgrind massif: enabled")
+        print(f"Massif output: {massif_out}")
+    if args.check_ram:
+        print("RAM check: enabled")
     print()
+
+    if args.check_ram:
+        try:
+            test_data = generator.generate_case(max_n, max_h, sum_limit)
+            formatted_input = generator.format_case(test_data)
+            if args.save_input_file:
+                save_path = Path(args.save_input_file)
+                if not save_path.is_absolute():
+                    save_path = Path.cwd() / save_path
+                save_path.parent.mkdir(parents=True, exist_ok=True)
+                save_path.write_text(formatted_input)
+        except Exception as e:
+            print(f"Generator error: {e}")
+            return 1
+
+        try:
+            program.run(formatted_input)
+        except ProgramRunError as e:
+            errors_file.parent.mkdir(parents=True, exist_ok=True)
+            (errors_file.parent / "failed_case.in").write_text(formatted_input)
+            print(f"✗ {e.kind}: {e}")
+            print(f"Test saved to: {errors_file.parent / 'failed_case.in'}")
+            return 1
+
+        if massif_out is None or not massif_out.exists():
+            print("✗ Massif output was not created")
+            return 1
+
+        peak_bytes = parse_massif_peak_bytes(massif_out)
+        limit_bytes = (
+            memory_limit_mb * 1024 * 1024 if memory_limit_mb is not None else None
+        )
+        peak_mib = peak_bytes / 1024 / 1024
+        limit_mib = limit_bytes / 1024 / 1024 if limit_bytes is not None else None
+        if limit_bytes is not None and peak_bytes > limit_bytes:
+            print(f"RAM peak: {peak_mib:.2f} MiB")
+            print(f"RAM limit: {limit_mib:.2f} MiB")
+            print("Result: EXCEEDED")
+            return 1
+
+        print(f"RAM peak: {peak_mib:.2f} MiB")
+        if limit_mib is not None:
+            print(f"RAM limit: {limit_mib:.2f} MiB")
+        print("Result: OK")
+        return 0
 
     errors_log = []
     errors_count = 0
@@ -305,6 +457,12 @@ def main() -> int:
                 try:
                     test_data = generator.generate_case(max_n, max_h, sum_limit)
                     formatted_input = generator.format_case(test_data)
+                    if args.save_input_file:
+                        save_path = Path(args.save_input_file)
+                        if not save_path.is_absolute():
+                            save_path = Path.cwd() / save_path
+                        save_path.parent.mkdir(parents=True, exist_ok=True)
+                        save_path.write_text(formatted_input)
                 except Exception as e:
                     print(f"Generator error: {e}")
                     return 1

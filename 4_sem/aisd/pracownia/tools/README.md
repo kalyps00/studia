@@ -62,6 +62,46 @@ Nowe opcje:
 - `--checker-max-n` - limity rozmiaru dla konkretnych checkerow
 - `--limit-checkers-memory` - naklada limit RAM tez na checkery
 - `--infinite` - odpala testy w petli bez konca
+- `--valgrind-massif` - uruchamia program testowany przez Valgrind massif
+- `--massif-out-file /tmp/massif.out` - gdzie zapisac profil pamieci massif
+- `--save-input-file /tmp/test.in` - zapisuje wygenerowany test do pliku
+- `--check-ram` - generuje jeden maksymalny test, uruchamia go pod Valgrind massif i wypisuje `OK` albo `EXCEEDED`
+
+W trybie `--check-ram` nie trzeba podawac `--checkers`.
+
+Uwaga: profilowanie przez Valgrind korzysta z binarki budowanej bez `-static`, bo statyczne
+linkowanie potrafi psuc massif albo sztucznie zawyzac narzut pamieci.
+
+Przyklad dla `komiwojazer` z pelnymi limitami i profilowaniem pamieci:
+
+```bash
+python3 stress_test.py \
+  --task komiwojazer \
+  --program ../zad\ C/komiwojazer.cpp \
+  --checkers ../zad\ C/komiwojazer.cpp \
+  --tests 1 \
+  --full-task-limits \
+  --memory-limit-mb 48 \
+  --valgrind-massif \
+  --massif-out-file /tmp/komiwojazer.massif
+```
+
+Po uruchomieniu raport podejrzysz poleceniem:
+
+```bash
+ms_print /tmp/komiwojazer.massif | head -80
+```
+
+Przyklad sprawdzenia samego RAM bez checkerow:
+
+```bash
+python3 stress_test.py \
+  --task komiwojazer \
+  --program ../zad\ C/komiwojazer.cpp \
+  --check-ram \
+  --memory-limit-mb 48 \
+  --save-input-file /tmp/komiwojazer_max.in
+```
 
 Domyslnie limit RAM dotyczy tylko programu testowanego. Checkery lecą bez limitu
 pamieci, zeby referencja nie wywalala sie sama z siebie na duzych testach.

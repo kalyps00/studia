@@ -4,7 +4,7 @@ import hashlib
 import resource
 import subprocess
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 
 class ProgramRunError(RuntimeError):
@@ -20,11 +20,15 @@ class ProgramRunner:
         timeout: Optional[int] = 10,
         memory_limit_mb: Optional[int] = None,
         build_dir: Optional[str] = None,
+        run_prefix: Optional[List[str]] = None,
+        static_link: bool = True,
     ):
         self.exe_path = Path(exe_path)
         self.timeout = timeout
         self.memory_limit_mb = memory_limit_mb
         self.build_dir = Path(build_dir) if build_dir else None
+        self.run_prefix = run_prefix or []
+        self.static_link = static_link
         self._compiled = False
         self._actual_exe = None
 
@@ -55,13 +59,14 @@ class ProgramRunner:
                 "-Wextra",
                 "-Wshadow",
                 "-O2",
-                "-static",
                 "-s",
                 "-DJUDGE",
                 "-o",
                 str(self._actual_exe),
                 str(self.exe_path),
             ]
+            if self.static_link:
+                compile_cmd.insert(6, "-static")
             proc = subprocess.run(
                 compile_cmd,
                 stdout=subprocess.PIPE,
@@ -83,8 +88,9 @@ class ProgramRunner:
         self._ensure_compiled()
 
         try:
+            cmd = [*self.run_prefix, str(self._actual_exe)]
             proc = subprocess.run(
-                [str(self._actual_exe)],
+                cmd,
                 input=input_data.encode(),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,

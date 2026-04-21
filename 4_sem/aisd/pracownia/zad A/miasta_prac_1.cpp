@@ -21,7 +21,7 @@ int main()
     {
         for (int j = 1; j < m + 1; j++)
         {
-            if (masks[grid[i][j]])
+            if (masks[(unsigned char)grid[i][j]])
             {
                 towns++;
                 head = tail = 0;
@@ -30,23 +30,23 @@ int main()
                 {
                     int x_y = queue[head++];
                     int x = x_y >> 16, y = x_y & 0xFFFF;
-                    uint32_t curr_mask = masks[grid[x][y]];
+                    uint32_t curr_mask = masks[(unsigned char)grid[x][y]];
                     if (curr_mask == 0)
                         continue;
 
                     grid[x][y] = 0;
 
                     // UP
-                    if ((curr_mask & 0b0001) && (masks[grid[x - 1][y]] & 0b0100))
+                    if ((curr_mask & 0b0001) && (masks[(unsigned char)grid[x - 1][y]] & 0b0100))
                         queue[tail++] = ((x - 1) << 16) | y;
                     // RIGHT
-                    if ((curr_mask & 0b0010) && (masks[grid[x][y + 1]] & 0b1000))
+                    if ((curr_mask & 0b0010) && (masks[(unsigned char)grid[x][y + 1]] & 0b1000))
                         queue[tail++] = (x << 16) | (y + 1);
                     // DOWN
-                    if ((curr_mask & 0b0100) && (masks[grid[x + 1][y]] & 0b0001))
+                    if ((curr_mask & 0b0100) && (masks[(unsigned char)grid[x + 1][y]] & 0b0001))
                         queue[tail++] = ((x + 1) << 16) | y;
                     // LEFT
-                    if ((curr_mask & 0b1000) && (masks[grid[x][y - 1]] & 0b0010))
+                    if ((curr_mask & 0b1000) && (masks[(unsigned char)grid[x][y - 1]] & 0b0010))
                         queue[tail++] = (x << 16) | (y - 1);
                 }
             }

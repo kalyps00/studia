@@ -163,15 +163,7 @@ def test_programs(programs, test_dir="tests"):
 
 if __name__ == "__main__":
     TEST_DIR = "tests"
-    PROGRAMS = [
-        "./zadA_v2",
-        # "./zadA",
-        "./miasta_prac_1",
-        "./miasta_prac_1_v2",
-        "./opt",
-        "./opt_v2",
-        "./opt_v3",
-    ]
+    PROGRAMS = ["./zadA_v2", "./miasta_prac_1"]
 
     # Sprawdź flagę --new
     if "--new" in sys.argv:

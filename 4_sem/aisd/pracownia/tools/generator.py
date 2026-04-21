@@ -93,8 +93,12 @@ class KomiwojazerGenerator(BaseGenerator):
             k = n - 1
         else:
             n = random.randint(self.constraints.n_min, max_n)
-            m = random.randint(n - 1, max(n - 1, max_m))
-            k = random.randint(1, max(1, max_k))
+            if max_m >= n - 1:
+                m = random.randint(n - 1, max_m)
+            else:
+                m = random.randint(1, max_m)
+            random_k_max = min(max_k, n - 1)
+            k = random.randint(1, max(1, random_k_max))
 
         seed = random.getrandbits(64)
         return n, m, k, seed
@@ -106,19 +110,29 @@ class KomiwojazerGenerator(BaseGenerator):
 
         buffer.write(f"{n} {m} {k}\n")
 
-        for node in range(1, n):
-            weight = rng.randint(1, 10_000)
-            buffer.write(f"{node} {node + 1} {weight}\n")
+        if m >= n - 1:
+            for node in range(1, n):
+                weight = rng.randint(1, 10_000)
+                buffer.write(f"{node} {node + 1} {weight}\n")
 
-        extra_edges = m - (n - 1)
-        for _ in range(extra_edges):
-            while True:
-                a = rng.randint(1, n)
-                b = rng.randint(1, n)
-                if a != b:
-                    break
-            weight = rng.randint(1, 10_000)
-            buffer.write(f"{a} {b} {weight}\n")
+            extra_edges = m - (n - 1)
+            for _ in range(extra_edges):
+                while True:
+                    a = rng.randint(1, n)
+                    b = rng.randint(1, n)
+                    if a != b:
+                        break
+                weight = rng.randint(1, 10_000)
+                buffer.write(f"{a} {b} {weight}\n")
+        else:
+            for _ in range(m):
+                while True:
+                    a = rng.randint(1, n)
+                    b = rng.randint(1, n)
+                    if a != b:
+                        break
+                weight = rng.randint(1, 10_000)
+                buffer.write(f"{a} {b} {weight}\n")
 
         if k == n - 1:
             for dest in range(2, n + 1):
