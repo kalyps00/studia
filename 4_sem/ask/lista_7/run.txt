@@ -1,0 +1,1 @@
+llvm-mca -mcpu=haswell -timeline -iterations=1 < nonsense.s
