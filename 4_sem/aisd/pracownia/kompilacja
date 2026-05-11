@@ -1,0 +1,1 @@
+g++ -std=gnu++20 -Wall -Wextra -Wshadow -O2 -static -s -DJUDG -o
