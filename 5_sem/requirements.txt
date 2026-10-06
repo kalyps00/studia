@@ -1,4 +1,3 @@
-# Pakiety używane przez um/lista_0.ipynb
 numpy
 pandas
 polars
@@ -9,7 +8,5 @@ scikit-learn
 scipy
 numba
 ipywidgets
-
-# Uruchamianie notebooka lokalnie
 jupyterlab
 ipykernel
