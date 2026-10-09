@@ -1,0 +1,6 @@
+# Rust build artifacts
+/target/
+
+# rustc and Cargo temporary files
+**/*.rs.bk
+Cargo.lock.bak
