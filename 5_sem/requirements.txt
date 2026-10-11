@@ -10,3 +10,4 @@ numba
 ipywidgets
 jupyterlab
 ipykernel
+ucimlrepo
