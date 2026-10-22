@@ -15,9 +15,19 @@ Zapobiega to niespojnosci danych jadra/sterownika w przypadku przerwania
 
 ## Akcje i zdarzenia wyzwalajace zmiane stanu:
 
-Użytkownik: - Tworzenie nowego procesu przez np fork() lub clone() (NULL -> Ready) - Przejscie w Interuptible np przez read() z gniazda(RUnning -> Interuptible) - Zakończenie działania przez exit() (Running -> Zombie) - SIGSTOP/SIGCONT wstzrymanie/wznowienie procesu Ready<->Stopped
-Kernel: - Wybór procesu z kolejki i zmaina jego statusu z Ready na Running - Skończenie się czasu przydzielonego procesowi i oddanie go innemu wtedy nasz proces executing -> Ready - Zabicie procesu przez jakis nie obsłużony błąd Running -> Zombie
-Sterowniki: - Przejscie w stan nieprzerywalny gdy proces musi czekać na ważną operacje sprzętowa - Wybudzenie z stanu ^
+Użytkownik:
+
+- Tworzenie nowego procesu przez np fork() lub clone() (NULL -> Ready)
+- Przejscie w Interuptible np przez read() z gniazda(RUnning -> Interuptible)
+- Zakończenie działania przez exit() (Running -> Zombie)
+- SIGSTOP/SIGCONT wstzrymanie/wznowienie procesu Ready<->Stopped
+  Kernel:
+- Wybór procesu z kolejki i zmaina jego statusu z Ready na Running
+- Skończenie się czasu przydzielonego procesowi i oddanie go innemu wtedy nasz proces executing -> Ready
+- Zabicie procesu przez jakis nie obsłużony błąd Running -> Zombie
+  Sterowniki:
+- Przejscie w stan nieprzerywalny gdy proces musi czekać na ważną operacje sprzętowa
+- Wybudzenie z stanu ^
 
 Czy proces może zablokować lub zignorować sygnał `SIGKILL` lub `SIGSEGV`?
 SIGKILL się nie da

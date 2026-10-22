@@ -20,9 +20,9 @@ Windows:
 1. Alokujemy nowe `task_struct` dla dziecka, a następnie przypisujemy mu nowy PID oraz nowy stos jądra
 2. Kopiowanie rejestrów procesora rodzica
 3. Kopiowanie i współdzielenie zasobów jądra, takich jak otwarte deskryptory plików, sygnały czy limity systemowe w efekcie dziecko i rodzic wskazują na te same obiekty plików
-4. Kopiowanie tablic stron pamięci w trybie **Copy-on-Write (CoW)** - przestrzeń adresowa nie jest fizycznie duplikowana od razu strony są współdzielone jako "tylko do odczytu", dopóki któryś z procesów nie spróbuje do nich zapisać
+4. Kopiowanie tablic stron pamięci w trybie Copy-on-Write (CoW) - przestrzeń adresowa nie jest fizycznie duplikowana od razu strony są współdzielone jako "tylko do odczytu", dopóki któryś z procesów nie spróbuje do nich zapisać
 5. Dodanie naszego nowego procesu do kolejki procesów gotowych do wykonania przez scheduler
-6. Zwrócenie PID dziecka do procesu macierzystego oraz wartości 0 do procesu potomnego (dzięki temu proces wie, czy jest rodzicem, czy dzieckiem)
+6. Zwrócenie PID dziecka do procesu macierzystego oraz wartości 0 do procesu potomnego żeby proces wiedział czy jest rodzicem czy dzickiem
 
 **Akcje w trakcie obsługi `execve(2)`:**
 

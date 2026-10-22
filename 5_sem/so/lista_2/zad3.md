@@ -3,9 +3,9 @@
 #### 1. Krytyka `fork()`
 
 - Brak kompozycyjności: `fork()` wymaga, aby każdy element systemu (wątki, biblioteki, akceleratory GPU) wspierał klonowanie. Jeśli jeden komponent tego nie obsługuje dochodzi do błędów i undefined behavior
-- Niezgodność z wątkami: Kopiowany jest tylko wątek wywołujący `fork()`. Jeśli inne wątki trzymały w tym czasie muteksy, w potomku pozostaną one zablokowane na zawsze (ryzyko zakleszczeń).
-- Zagrożenie dla bezpieczeństwa: `fork()` kopiuje całą pamięć rodzica – w tym wrażliwe sekrety, klucze kryptograficzne i zrandomizowany układ pamięci (omijanie zabezpieczeń ASLR).
-- **Niska wydajność:** Duplikowanie tablic stron przy mechanizmie Copy-On-Write (COW) dla dużych procesów jest bardzo wolne i trwa kilkadziesiąt milisekund (w porównaniu do ~0,5 ms dla `posix_spawn`).
+- Niezgodność z wątkami: Kopiowany jest tylko wątek wywołujący `fork()`. Jeśli inne wątki trzymały w tym czasie muteksy, w potomku pozostaną one zablokowane na zawsze
+- Zagrożenie dla bezpieczeństwa: `fork()` kopiuje całą pamięć rodzica – w tym wrażliwe sekrety, klucze kryptograficzne i zrandomizowany układ pamięci (omijanie zabezpieczeń ASLR)
+- Niska wydajność: Duplikowanie tablic stron przy mechanizmie Copy-On-Write (COW) dla dużych procesów jest bardzo wolne i trwa kilkadziesiąt milisekund (w porównaniu do ~0,5 ms dla `posix_spawn`)
 
 #### 2. Obrona `fork()`
 
@@ -21,6 +21,7 @@
 #### 4. Przykłady użycia `fork()` bez `execve()`
 
 1. Rozwiązanie problemu n hetmanow
-2. Chcesz wykonać fragment kodu który może być niestabilny np. może wystąpić dzielenie przez zero
+2. fork bomba
+3. Chcesz wykonać fragment kodu który może być niestabilny np. może wystąpić dzielenie przez zero
    wtedy niestabilne operacje wykonujemy na forku
-3. Odłączenie procesu od terminala wtedy proces wykonuje fork a rodzic od razu robi exit(0)
+4. Odłączenie procesu od terminala wtedy proces wykonuje fork a rodzic od razu robi exit(0)
