@@ -3,19 +3,19 @@
 #### 1. Zasoby dziedziczone przez proces potomny po wywołaniu `fork(2)`
 
 - Deskryptory plików: Wszystkie otwarte deskryptory plików są duplikowane. Zarówno rodzic, jak i dziecko współdzielą te same tablice plików w jądrze, w tym m.in. wspólną pozycję wskaźnika odczytu/zapisu
-- Katalog roboczy i główny: Bieżący katalog roboczy (CWD) oraz ewentualnie zmieniony katalog główny (np. przez `chroot`).
+- Katalog roboczy i główny: Bieżący katalog roboczy (CWD) oraz ewentualnie zmieniony katalog główny (np. przez `chroot`)
 - Identyfikatory: Rzeczywiste oraz efektywne identyfikatory użytkownika (UID) i grupy (GID).
-- Sygnały: Maska zablokowanych sygnałów oraz pełna dyspozycja sygnałów (własne procedury obsługi i ustawienia ignorowania).
-- Środowisko i argumenty: Pełna kopia argumentów wywołania oraz zmiennych środowiskowych procesu macierzystego.
-- Limity: Skonfigurowane limity zasobów (np. ustalenia polecenia `ulimit`).
-- Pamięć współdzielona: Dołączone segmenty pamięci współdzielonej oraz mapowania pamięci utworzone za pomocą `mmap`.
+- Sygnały: Maska zablokowanych sygnałów oraz pełna dyspozycja sygnałów (własne procedury obsługi i ustawienia ignorowania)
+- Środowisko i argumenty: Pełna kopia argumentów wywołania oraz zmiennych środowiskowych procesu macierzystego
+- Limity: Skonfigurowane limity zasobów (np. ustalenia polecenia `ulimit`)
+- Pamięć współdzielona: Dołączone segmenty pamięci współdzielonej oraz mapowania pamięci utworzone za pomocą `mmap`
 
 #### 2. Zasoby przekazywane do nowego programu po wywołaniu `execve(2)`
 
 - Argumenty wywołania i środowisko w postaci tablicy argumentów argv oraz tablicy środowiskowej envp
 - Deskryptory plików: Deskryptory otwarte przed wywołaniem `execve` pozostają otwarte i dostępne dla nowego programu, z wyjątkiem tych, dla których włączono flagę `O_CLOEXEC` (Close-on-Exec)
 - Identyfikatory procesu: PID oraz numer procesu macierzystego (PPID) pozostają takie same
-- Katalog roboczy i limity - nowy program zachowuje bieżący katalog roboczy oraz zdefiniowane ograniczenia zasobów.
+- Katalog roboczy i limity - nowy program zachowuje bieżący katalog roboczy oraz zdefiniowane ograniczenia zasobów
 
 #### 3. Czemu przed wywołaniem `fork` należy opróżnić bufory biblioteki `stdio(3)`?
 
@@ -27,5 +27,5 @@ W rezultacie, gdy oba procesy w końcu zrzucą swoje bufory te same dane zostan�
 
 Podczas `execve(2)` jądro całkowicie zwalnia dotychczasową przestrzeń adresową procesu i ładuje w jej miejsce nowy kod. Pociąga to za sobą zmianę w konfiguracji sygnałów:
 
-1.  Sygnały ignorowane (`SIG_IGN`): Pozostają zignorowane przez nowy program (są dziedziczone).
+1.  Sygnały ignorowane (`SIG_IGN`): Pozostają zignorowane przez nowy program (są dziedziczone)
 2.  Sygnały z niestandardowymi procedurami obsługi: Jądro przywraca dla nich akcję domyślną (`SIG_DFL`) bo skoro niszczyczmy stara przestrzen adresowa to nie ma co szukać skoku do handlera
