@@ -1,5 +1,5 @@
 [workspace]
-members = ["lista_1", "lista_2"]
+members = ["lista_1", "lista_2", "lista_3"]
 resolver = "2"
 
 [workspace.dependencies]

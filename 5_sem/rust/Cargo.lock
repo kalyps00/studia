@@ -3,6 +3,12 @@
 version = 4
 
 [[package]]
+name = "bytes"
+version = "1.12.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fc652a48c352aef3ea3aed32080501cf3ef6ed5da78602a020c991775b0aff04"
+
+[[package]]
 name = "cfg-if"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -37,6 +43,13 @@ name = "lista-2"
 version = "0.1.0"
 dependencies = [
  "rand",
+]
+
+[[package]]
+name = "lista-3"
+version = "0.1.0"
+dependencies = [
+ "string",
 ]
 
 [[package]]
@@ -94,6 +107,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
  "getrandom",
+]
+
+[[package]]
+name = "string"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "73d5d847c1450954c3bcc99db14566d9e4c6ab0736a928bc366d5265e45031e2"
+dependencies = [
+ "bytes",
 ]
 
 [[package]]
