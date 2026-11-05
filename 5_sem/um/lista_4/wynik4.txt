@@ -1,0 +1,31 @@
+Startowe AIC: 35950.08
+
+Wybrano: marital.status_Married-civ-spouse | AIC: 29086.1215
+Wybrano: education.num                  | AIC: 25330.8982
+Wybrano: capital.gain                   | AIC: 23223.5490
+Wybrano: hours.per.week                 | AIC: 22774.6893
+Wybrano: age                            | AIC: 22370.2534
+Wybrano: capital.loss                   | AIC: 22015.4272
+Wybrano: occupation_Exec-managerial     | AIC: 21778.8437
+Wybrano: occupation_Farming-fishing     | AIC: 21630.8456
+Wybrano: relationship_Own-child         | AIC: 21518.0079
+Wybrano: occupation_Other-service       | AIC: 21412.0291
+Wybrano: relationship_Wife              | AIC: 21358.0233
+Wybrano: sex_Male                       | AIC: 21238.1869
+Wybrano: occupation_Prof-specialty      | AIC: 21181.0716
+Wybrano: occupation_Tech-support        | AIC: 21133.1062
+Wybrano: workclass_Self-emp-not-inc     | AIC: 21087.2797
+Wybrano: occupation_Sales               | AIC: 21045.5591
+Wybrano: workclass_Federal-gov          | AIC: 21007.4116
+Wybrano: marital.status_Never-married   | AIC: 20969.5684
+Wybrano: occupation_Protective-serv     | AIC: 20942.7442
+Wybrano: occupation_Craft-repair        | AIC: 20908.5766
+Wybrano: occupation_Adm-clerical        | AIC: 20888.1992
+Wybrano: marital.status_Married-AF-spouse | AIC: 20872.4635
+Wybrano: occupation_Transport-moving    | AIC: 20857.0923
+...
+education_Preschool                  -0.0836      1.073     -0.078      0.938      -2.187       2.019
+=====================================================================================================
+
+Dokładność (Accuracy) modelu: 0.8502
+Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...
