@@ -22,4 +22,4 @@ Przy alokacji statycznej dany sprzęt miał zawsze ten sam numer major. Administ
 
 Przy alokacji dynamicznej po restarcie jądro mogłoby przydzielić sterownikowi inny numer major. Ręcznie utworzone pliki w starym `/dev/` przestałyby wtedy działać, bo wskazywałyby na nieaktualne numery. Trzeba byłoby je naprawiać po każdym uruchomieniu.
 
-Obecnie ten problem nie występuje, ponieważ systemy takie jak `udev`.
+Obecnie ten problem nie występuje, ponieważ są systemy takie jak `udev`.

@@ -12,3 +12,4 @@ jupyterlab
 ipykernel
 ucimlrepo
 nbstripout
+statsmodels
