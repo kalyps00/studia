@@ -1,0 +1,98 @@
+#![allow(dead_code)]
+#![cfg_attr(not(test), no_main)]
+struct Sudoku {
+    data: Vec<Vec<u32>>,
+}
+
+impl Sudoku {
+    fn is_valid(&self) -> bool {
+        let elem = self.data.len();
+        let box_size = (elem as f64).sqrt() as usize;
+
+        if elem == 0
+            || box_size * box_size != elem
+            || !self.data.iter().all(|r| r.len() == elem)
+        {
+            return false;
+        }
+
+        let expected: Vec<u32> = (1..=elem as u32).collect();
+        let ok = |mut v: Vec<u32>| {
+            v.sort_unstable();
+            v == expected
+        };
+
+        let rows = self.data.iter().cloned().all(ok);
+        let cols = (0..elem).all(|c| ok((0..elem).map(|r| self.data[r][c]).collect()));
+        let boxes = (0..elem).step_by(box_size).all(|br| {
+            (0..elem).step_by(box_size).all(|bc| {
+                ok((br..br + box_size)
+                    .flat_map(|r| (bc..bc + box_size).map(move |c| self.data[r][c]))
+                    .collect())
+            })
+        });
+
+        rows && cols && boxes
+    }
+}
+
+#[test]
+fn good_sudoku() {
+    let good_sudoku_1 = Sudoku{
+        data: vec![
+                vec![7,8,4, 1,5,9, 3,2,6],
+                vec![5,3,9, 6,7,2, 8,4,1],
+                vec![6,1,2, 4,3,8, 7,5,9],
+
+                vec![9,2,8, 7,1,5, 4,6,3],
+                vec![3,5,7, 8,4,6, 1,9,2],
+                vec![4,6,1, 9,2,3, 5,8,7],
+                
+                vec![8,7,6, 3,9,4, 2,1,5],
+                vec![2,4,3, 5,6,1, 9,7,8],
+                vec![1,9,5, 2,8,7, 6,3,4]
+            ]
+    };
+    
+    let good_sudoku_2 = Sudoku{
+        data: vec![
+                vec![1, 4,  2, 3],
+                vec![3, 2,  4, 1],
+        
+                vec![4, 1,  3, 2],
+                vec![2, 3,  1, 4],
+            ]
+    };
+    assert!(good_sudoku_1.is_valid());
+    assert!(good_sudoku_2.is_valid());
+}
+
+#[test]
+fn bad_sudoku() {
+    let bad_sudoku_1 = Sudoku{
+        data: vec![
+                vec![1,2,3, 4,5,6, 7,8,9],
+                vec![1,2,3, 4,5,6, 7,8,9],
+                vec![1,2,3, 4,5,6, 7,8,9],
+
+                vec![1,2,3, 4,5,6, 7,8,9],
+                vec![1,2,3, 4,5,6, 7,8,9],
+                vec![1,2,3, 4,5,6, 7,8,9],
+                
+                vec![1,2,3, 4,5,6, 7,8,9],
+                vec![1,2,3, 4,5,6, 7,8,9],
+                vec![1,2,3, 4,5,6, 7,8,9],
+            ]
+    };
+    
+    let bad_sudoku_2 = Sudoku{
+        data: vec![
+                vec![1,2,3,4,5],
+                vec![1,2,3,4],
+                vec![1,2,3,4],
+                vec![1],
+            ]
+    };
+    assert!(!bad_sudoku_1.is_valid());
+    assert!(!bad_sudoku_2.is_valid());
+}

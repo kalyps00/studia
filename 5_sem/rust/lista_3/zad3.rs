@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 fn solution(num: i32) -> i32 {
     /* let mut sum = 0;
     for i in 1..num{
