@@ -1,3 +1,8 @@
 [submodule "4_sem/uwr-react"]
 	path = 4_sem/uwr-react
 	url = git@github.com:kalyps00/uwr-react.git
+[submodule "3_sem/weppo/projekt-weppo"]
+	path = 3_sem/weppo/projekt-weppo
+	url = https://github.com/C0play/projekt-weppo.git
+	branch = main
+	ignore = untracked
