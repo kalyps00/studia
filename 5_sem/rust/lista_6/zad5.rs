@@ -9,9 +9,10 @@ impl Sudoku {
         let elem = self.data.len();
         let box_size = (elem as f64).sqrt() as usize;
 
-        if elem == 0
-            || box_size * box_size != elem
-            || !self.data.iter().all(|r| r.len() == elem)
+        if elem == 0 //pusta
+            || box_size * box_size != elem // nie jest kwadratem
+            || !self.data.iter()
+                         .all(|r| r.len() == elem) //nie wszystkie wiersze mają taką samą długość
         {
             return false;
         }
@@ -22,13 +23,25 @@ impl Sudoku {
             v == expected
         };
 
-        let rows = self.data.iter().cloned().all(ok);
-        let cols = (0..elem).all(|c| ok((0..elem).map(|r| self.data[r][c]).collect()));
-        let boxes = (0..elem).step_by(box_size).all(|br| {
+        let rows = self
+            .data
+            .iter()
+            .cloned()
+            .all(ok);
+
+        let cols = (0..elem).all(|c| {
+            let col = self.data.iter().map(|row| row[c]).collect();
+            ok(col)
+        });
+
+        let boxes = self.data.chunks(box_size).all(|row_chunk| {
             (0..elem).step_by(box_size).all(|bc| {
-                ok((br..br + box_size)
-                    .flat_map(|r| (bc..bc + box_size).map(move |c| self.data[r][c]))
-                    .collect())
+                let subgrid = row_chunk
+                    .iter()
+                    .flat_map(|row| &row[bc..bc + box_size])
+                    .copied()
+                    .collect();
+                ok(subgrid)
             })
         });
 
@@ -95,4 +108,31 @@ fn bad_sudoku() {
     };
     assert!(!bad_sudoku_1.is_valid());
     assert!(!bad_sudoku_2.is_valid());
+}
+
+#[test]
+fn mytest1() {
+    let sudoku = Sudoku {
+        data: vec![vec![1]],
+    };
+    assert!(sudoku.is_valid());
+}
+
+#[test]
+fn mytest2() {
+    let sudoku = Sudoku {
+        data: vec![],
+    };
+    assert!(!sudoku.is_valid());
+}
+
+#[test]
+fn mytest3() {
+    let sudoku = Sudoku {
+        data: vec![
+            vec![1, 2],
+            vec![3, 4],
+        ],
+    };
+    assert!(!sudoku.is_valid());
 }
